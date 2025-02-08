@@ -1,45 +1,104 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { View, Text, Image } from "react-native";
+import React from "react";
+import { Tabs } from "expo-router";
+import { icons } from "@/constants";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+const TabIcon = ({
+  icon,
+  name,
+  color,
+  focused,
+  className
+}: {
+  icon: any;
+  name: string;
+  color: string;
+  focused: boolean;
+  className?: string
+}) => {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
+    <View className="items-center flex-1 justify-center gap-2 ">
+      <Image
+        source={icon}
+        resizeMode="contain"
+        tintColor={color}
+        className={className || "w-6 h-6"}
       />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+      <Text
+        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs w-full `}
+        textBreakStrategy="simple"
+      >
+        {name}
+      </Text>
+    </View>
   );
-}
+};
+
+const TabsLayout = () => {
+  return (
+    <>
+      <Tabs
+        screenOptions={{
+          tabBarShowLabel: false,
+          tabBarInactiveTintColor:"#CDCDE0",
+          tabBarActiveTintColor:"#FF6B6B",
+          tabBarStyle: {
+            height: 55,
+            paddingTop: 15,
+            elevation:0,
+            // borderTopWidth: 0
+          }
+        }}
+      >
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: "Home",
+            headerShown: false,
+            tabBarIcon: ({ focused, color }) => (
+              <TabIcon
+                icon={icons.home}
+                name="Home"
+                focused={focused}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="wod"
+          options={{
+            title: "Word of Day",
+            headerShown: false,
+            tabBarIcon: ({ focused, color }) => (
+              <TabIcon
+                icon={icons.wod}
+                name="Word of Day"
+                focused={focused}
+                color={color}
+                className="w-7 h-7"
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            headerShown: false,
+            tabBarIcon: ({ focused, color }) => (
+              <TabIcon
+                icon={icons.profile}
+                name="Profile"
+                focused={focused}
+                color={color}
+              />
+            ),
+          }}
+        />
+      </Tabs>
+    </>
+  );
+};
+
+export default TabsLayout;
